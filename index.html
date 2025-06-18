@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTT TV Launcher</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      font-size: 24px; /* Larger text for TVs */
+    }
+
+    .launcher-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2vh;
+    }
+
+    .preview {
+      width: 80%;           /* Was 60% */
+      height: 45%;          /* Was 40% */
+      background-color: #000;
+      margin-bottom: 3vh;   /* More spacing */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview img {
+      max-height: 100%;
+      max-width: 100%;
+#      border: 6px solid white;  /* Thicker border */
+      border-radius: 12px;
+    }
+
+    .carousel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 1600px;    /* Wider for bigger screens */
+      gap: 30px;            /* Space between thumbnails */
+    }
+
+    .carousel-item {
+      flex: 0 0 auto;
+      width: 280px;         /* Was 200px */
+      transition: transform 0.3s, border 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .carousel-item.focused {
+        border: 2px solid #fff;
+        border-radius: 8px;           /* 🔄 Rounded corners */
+        transform: scale(1.08);        /* Optional zoom effect */
+    }
+
+    .carousel-item img {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+    }
+ </style>
+</head>
+<body>
+  <div class="launcher-container">
+    <div class="preview" id="preview">
+      <img src="images/Senza_thumb1.png" alt="Preview" id="previewImage" />
+    </div>
+    <div class="carousel" id="carousel">
+      <div class="carousel-item" data-url="https://launcher.streaming.synamedia.com/redirect/senza-app/stable/index.html#category=senza?config=senza-app">
+        <img src="images/Senza_thumb1.png" alt="Senza Launcher" />
+      </div>
+      <div class="carousel-item" data-url="https://development.3ss.tv/claro-smarttv/develop/">
+        <img src="images/ClaroTV thumb1.png" alt="ClaroTV+" />
+      </div>
+      <div class="carousel-item" data-url="https://www.synamedia.com/product/iris-server-side-ad-insertion/">
+        <img src="images/Slide2.PNG" alt="IRIS SSAI" />
+      </div>
+      <div class="carousel-item" data-url="https://www.synamedia.com/product/iris/">
+        <img src="images/Slide3.PNG" alt="IRIS AA" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const items = document.querySelectorAll('.carousel-item');
+    const previewImage = document.getElementById('previewImage');
+    let currentIndex = 0;
+
+    function updateFocus() {
+      items.forEach((item, index) => {
+        item.classList.toggle('focused', index === currentIndex);
+      });
+
+      const selectedImg = items[currentIndex].querySelector('img');
+      const previewSrc = selectedImg.getAttribute('src');
+      previewImage.src = previewSrc;
+      previewImage.alt = selectedImg.alt;
+    }
+
+    function moveLeft() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateFocus();
+      }
+    }
+
+    function moveRight() {
+      if (currentIndex < items.length - 1) {
+        currentIndex++;
+        updateFocus();
+      }
+    }
+
+    function enter() {
+      const selected = items[currentIndex];
+      const url = selected.getAttribute('data-url');
+      if (url) {
+        window.location.href = url;
+      } else {
+        alert(`No URL defined for: ${selected.querySelector('img').alt}`);
+      }
+    }
+
+    document.addEventListener('keydown', function (event) {
+      switch (event.key) {
+        case 'ArrowLeft': moveLeft(); break;
+        case 'ArrowRight': moveRight(); break;
+        case 'Enter': enter(); break;
+        case 'Escape': alert('Exit'); break;
+        default: return;
+      }
+      event.preventDefault();
+    });
+
+    // Initialize focus on load
+    window.onload = updateFocus;
+  </script>
+</body>
+</html>
